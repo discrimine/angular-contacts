@@ -1,20 +1,100 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
+<div style="text-align:center"> 
+  <h1 class="main_title">
+   Приложение {{ title }}
   </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="b-container">
 
+    <div class="contact_actions">
+        <label for="filterName">Поиск по имени</label>
+        <input type="text" #filterName (keyup)=user_filter($event,filterName) >
+  
+        <label for="filterEmail">Поиск по email</label>
+        <input type="text" #filterEmail (keyup)=user_filter_email($event,filterEmail) >
+  
+      <button (click)="add_cont=!add_cont" class="btn_new-cont btn btn-primary">Добавить контакт</button>  
+  
+      <div [ngClass]="add_cont ? 'opened' : 'closed'" class="add_contact-container">
+        <p class="add_contact__title">Добавить новый контакт</p>
+        <form action="" class="form_new-cont">
+          <label for="cont_name">Имя</label>
+          <input type="text" #newName id="name" name="name">
+  
+          <label for="cont_surname">Фамилия</label>
+          <input type="text" #newSurname id="surname" name="surname">
+  
+          <label for="cont_date">Дата рождения</label>
+          <input type="date" #newDate id="date" name="date">
+  
+          <label for="cont_email">Адрес электронной почты</label>
+          <input type="email" #newEmail id="email" name="email">
+  
+          <button (click)="add_cont=!add_cont" class="user_add btn btn-primary" (click)="user_add($event, newName, newSurname, newDate, newEmail); false">Добавить запись</button>
+        </form>
+      </div>
+      <div [ngClass]="show_edit ? 'opened' : 'closed'" class="edit_contact-container">
+        <p class="add_contact__title">Изменить контакт</p>
+        <form class="form_new-cont" action="">
+          <label for="cont_name">Имя</label>
+          <input type="text" #editName id="name" value="{{ userName }}" name="name">
+  
+          <label for="cont_surname">Фамилия</label>
+          <input type="text" #editSurname id="surname" value="{{ userSurname }}" name="surname">
+  
+          <label for="cont_date">Дата рождения</label>
+          <input type="date" #editDate id="date" value="{{ userDate }}" name="date">
+  
+          <label for="cont_email">Адрес электронной почты</label>
+          <input type="email" #editEmail id="email" value="{{ userEmail }}" name="email">
+          <button (click)="show_edit=!show_edit" class="user_add btn btn-primary" (click)="user_edit($event, userId, editName, editSurname, editDate, editEmail); false">Изменить запись</button>
+        </form>
+      </div>
+    </div>   
+
+  <div class="mask" (click)="add_cont=!add_cont;" [ngClass]="add_cont ? 'opened' : 'closed'"></div>
+  <div class="mask" (click)="show_edit=!show_edit;" [ngClass]="show_edit ? 'opened' : 'closed'"></div>
+  <table class="main_table table table-light table-striped" cellpadding="5">
+    <thead>
+      <th>id</th>
+      <th>Имя</th>
+      <th>Фамилия</th>
+      <th>Дата рождения</th>
+      <th>Адрес электронной почты</th>
+      <th></th>
+      <th></th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td #userId> {{ user.id }}</td>
+        <td #userName> {{ user.attributes.name_first }}</td>
+        <td #userSurname> {{ user.attributes.name_last }}</td>
+        <td #userDate> {{ user.attributes.birthday }}</td>
+        <td #userEmail> {{ user.attributes.email }}</td>
+        <td>
+          <button class="user_add" (click)="user_delete($event, userId); false">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+        </button>
+      </td>
+        <td width="20px;">
+          <button class="user_add" (click)="user_edit_show($event, userId, userName, userSurname, userDate, userEmail); false" (click)="show_edit=!show_edit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagi-list">
+    <div class="pagi" *ngFor = "let n of pages_array">
+      <a class="pagi_a" #pageNum  (click)="pagi_func($event, pageNum)">{{n+1}}</a>
+    </div>  
+  </div> 
+
+
+</div>   

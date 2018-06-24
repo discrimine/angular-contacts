@@ -1,0 +1,14 @@
+{ "persons" : [
+    {
+        "id" : 1,
+        "name" : "vasya", 
+        "number": "066 746 24 69", 
+        "email" : "discrimine96@gmail.com"
+  },{
+        "id" : 2, 
+        "name" : "vasyok", 
+        "number": "066 746 24 70", 
+        "email" : "discriminwa96@gmail.com"
+  }
+]
+  } 

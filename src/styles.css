@@ -1,1 +1,118 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+
+.b-container{
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 950px;
+  }
+  .container table td{
+    font-size: 14px;
+    font-weight: 400;
+    text-align: left;
+  }
+  .form_new-cont{
+    display: flex;
+    flex-direction: column;
+  }
+  .form_new-cont label{
+    margin-top: 20px;
+  }
+  .user_add{
+    margin: 20px 0px;
+    background-color: unset;
+    border: none;
+    outline: none;
+    opacity: .5;
+  }
+  .user_add:hover{
+    cursor: pointer;
+    opacity: 1;
+  }
+  .opened{
+      display: flex;
+  }
+  .closed{
+      display: none;
+  }
+  .add_contact-container, .edit_contact-container{
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      background-color: #fff;
+      padding: 20px 60px 20px 60px;
+      width: 400px;
+      height: 550px;
+      margin-left: -200px;
+      margin-top: -275px;
+      z-index: 2;
+      border-radius: 30px;
+      overflow: auto;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+  }
+  .mask{
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(0, 0, 0, .5);
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+  }
+  .add_contact__title{
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+  }
+  .contact_search-container{
+    display: flex;
+    flex-direction: column;
+
+  }
+  .btn_new-cont{
+      width: 200px;
+      height: 50px;
+  }
+  .pagi{
+    margin: 0 5px;
+  }
+  .pagi-list{
+    display: flex;
+    
+  }
+  .contact_actions{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .contact_actions label{
+    margin-right: 10px;
+    margin-bottom: 0px;
+  }
+  .contact_actions input{
+    margin-right: 50px;
+  }
+  .pagi_a{
+    cursor: pointer;
+    margin: 0 2px;
+  }
+  .main_table{
+    min-height: 500px;
+    width: 100%;
+  }
+  .main_table td{
+    vertical-align: middle!important;
+  }
+  .main_title{
+    margin: 30px 0;
+  }
+  .table thead th{
+    font-weight: 500;
+  }  
