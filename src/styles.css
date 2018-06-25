@@ -21,16 +21,22 @@
   .form_new-cont label{
     margin-top: 20px;
   }
-  .user_add{
+  .form_new-cont input{
+    width: 100%;
+  }
+  .user_edit{
     margin: 20px 0px;
     background-color: unset;
     border: none;
     outline: none;
     opacity: .5;
   }
-  .user_add:hover{
+  .user_edit:hover{
     cursor: pointer;
     opacity: 1;
+  }
+  .user_add{
+    margin-top: 20px;
   }
   .opened{
       display: flex;
