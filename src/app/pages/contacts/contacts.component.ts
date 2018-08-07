@@ -14,7 +14,7 @@
     providers: [UsersService]
   })
   export class ContactsComponent {
-    title = 'адресная книга';
+    title = 'adress book';
     users = [];
     add_cont;
     show_edit;

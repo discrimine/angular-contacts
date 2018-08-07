@@ -10,6 +10,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { NotFound404Component } from './pages/not-found404/not-found404.component';
 import { ContactsComponent } from './pages/contacts/contacts.component';
 import { RoutingRoutingModule } from './routing/routing-routing.module';
+import { MainComponent } from './pages/main/main.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { RoutingRoutingModule } from './routing/routing-routing.module';
     ContactComponent,
     NotFound404Component,
     ContactsComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
