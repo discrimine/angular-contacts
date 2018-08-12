@@ -5,6 +5,8 @@
   import { Router, ActivatedRoute, Params } from '@angular/router';
   import { URLSearchParams } from "@angular/http";
   import { stringify } from '@angular/compiler/src/util';
+  import { FormControl, Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+  import { Title, Meta } from '@angular/platform-browser';
   
   
   @Component({
@@ -16,12 +18,22 @@
   export class ContactsComponent {
     title = 'adress book';
     users = [];
-    add_cont;
+    add_cont = false;
     show_edit;
+    rForm: FormGroup;
+    tryAdd = false;
   
-    constructor(private usersService: UsersService) {
+    constructor(private usersService: UsersService, fb: FormBuilder, titleService: Title, meta: Meta) {
+     this.rForm = fb.group({
+       'first_name' : [null, [Validators.required]],
+       'last_name' : [null, [Validators.required]],
+       'birthday' : [null, [Validators.required]],
+       'email' : [null, [Validators.required, Validators.email]]
+     })
+     titleService.setTitle('Your contacts');
+     meta.addTag({ name: 'keywords', content: 'contacts list, contacts book' });
+     meta.addTag({ name: 'description', content: 'best contact list in over the world' })
     };
-  
     
     user_subs(link) {
       this.usersService.getUsers(link).subscribe(users => {
@@ -48,32 +60,38 @@
     };
     //new user
     user_add(event: any, newName, newSurname, newDate, newEmail) {
-      const bodyObj = {
-        "data": {
-          "type": "human",
-          "attributes": {
-            "name_first": newName.value,
-            "name_last": newSurname.value,
-            "birthday": newDate.value,
-            "email": newEmail.value
+      if (this.rForm.valid){
+        const bodyObj = {
+          "data": {
+            "type": "human",
+            "attributes": {
+              "name_first": newName.value,
+              "name_last": newSurname.value,
+              "birthday": newDate.value,
+              "email": newEmail.value
+            }
           }
         }
+        fetch("http://angulartest.vivasg.com/human", {
+          method: 'post',
+          mode: 'cors',
+          headers: {
+            "Accept": "application/vnd.api+json",
+            "Accept-Encoding": "utf-8",
+            "Accept-Language": "uk",
+            "Content-Type": "application/vnd.api+json",
+            "Content-Language": "uk"
+          }
+          , body: JSON.stringify(bodyObj)
+        });
+        this.usersService.getUsers("http://angulartest.vivasg.com/human?page[limit]=5").subscribe(users => {
+          this.users = users;
+        })
+        this.add_cont = false;
+      }else{
+        alert('incorrect data');
+        this.tryAdd = true;
       }
-      fetch("http://angulartest.vivasg.com/human", {
-        method: 'post',
-        mode: 'cors',
-        headers: {
-          "Accept": "application/vnd.api+json",
-          "Accept-Encoding": "utf-8",
-          "Accept-Language": "uk",
-          "Content-Type": "application/vnd.api+json",
-          "Content-Language": "uk"
-        }
-        , body: JSON.stringify(bodyObj)
-      });
-      this.usersService.getUsers("http://angulartest.vivasg.com/human?page[limit]=5").subscribe(users => {
-        this.users = users;
-      })
     };
     //user_delete
     user_delete(event: any, userId) {
@@ -107,32 +125,6 @@
       this.userEmail = userEmail.innerText;
       this.userId = userId.innerText;
     }
-    user_edit(event: any, userId, editName, editSurname, editDate, editEmail ) {
-      fetch('http://angulartest.vivasg.com/human/'+this.userId, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          "data": {
-            "type": "human", "id": this.userId,
-            "attributes": {
-              "name_first": editName.value,
-              "name_last": editSurname.value,
-              "birthday": editDate.value,
-              "email": editEmail.value
-            }
-          }
-        }),
-        headers: {
-          "Accept": "application/vnd.api+json",
-          "Accept-Encoding": "utf-8",
-          "Accept-Language": "uk",
-          "Content-Type": "application/vnd.api+json",
-          "Content-Language": "uk"
-        }
-      })
-      this.usersService.getUsers("http://angulartest.vivasg.com/human?page[limit]=5").subscribe(users => {
-        this.users = users;
-      })
-    };
     // pagination
     pages_array = [];
     number_of_pages = 0;
@@ -142,11 +134,7 @@
           this.pages_array.push(i);
         }
       })
-    
-  
-      
-  
-  
+
     pagi_func(event: any, pageNum){
       pageNum = (parseInt(pageNum.innerText)-1)*5;
       this.usersService.getUsers("http://angulartest.vivasg.com/human?page[limit]=5&page[offset]=" + pageNum).subscribe(users => {
@@ -155,7 +143,6 @@
     }
   
     ngOnInit(page_number) {
-  
       this.usersService.getUsers("http://angulartest.vivasg.com/human?page[limit]=5").subscribe(users => {
         this.users = users;
       })

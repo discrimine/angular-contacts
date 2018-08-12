@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title, Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-main',
@@ -7,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
-  constructor() { }
+  constructor(titleService: Title, meta: Meta) {
+    titleService.setTitle('Home');
+    meta.addTag({ name: 'keywords', content: 'contacts, home, main' });
+    meta.addTag({ name: 'description', content: 'beautifull contact list' })
+  }
 
   ngOnInit() {
   }

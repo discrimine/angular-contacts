@@ -1,0 +1,71 @@
+<div class="content">
+<div style="text-align:center"> 
+  <h1 class="main_title">
+    Full contact list
+  </h1>
+</div>
+<div class="b-container">
+  <div class="sort">
+    sort by: 
+    <button class="sort_but btn btn-primary" (click)="sortById()">id</button>
+    <button class="sort_but btn btn-primary" (click)="sortByFirstName()">first name</button>
+    <button class="sort_but btn btn-primary" (click)="sortByLastName()">last name</button>
+    <button class="sort_but btn btn-primary" (click)="sortByBirth()">birthday</button>
+    <button class="sort_but btn btn-primary" (click)="sortByEmail()">email</button>
+  </div>
+    <div class="contact_actions">
+        <label for="filterName">Поиск по имени</label>
+        <input type="text" #filterName (keyup)=user_filter($event,filterName) >
+  
+        <label for="filterEmail">Поиск по email</label>
+        <input type="text" #filterEmail (keyup)=user_filter_email($event,filterEmail) >
+  
+    </div>   
+
+  <div class="mask" (click)="add_cont=!add_cont;" [ngClass]="add_cont ? 'opened' : 'closed'"></div>
+  <div class="mask" (click)="show_edit=!show_edit;" [ngClass]="show_edit ? 'opened' : 'closed'"></div>
+  <table class="main_table table table-light table-striped" cellpadding="5">
+    <thead>
+      <th>id</th>
+      <th>first name</th>
+      <th>last name</th>
+      <th>birthday</th>
+      <th>email</th>
+      <th></th>
+      <th></th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td #userId> {{ user.id }}</td>
+        <td #userName> {{ user.attributes.name_first }}</td>
+        <td #userSurname> {{ user.attributes.name_last }}</td>
+        <td #userDate> {{ user.attributes.birthday | date }}</td>
+        <td #userEmail> {{ user.attributes.email }}</td>
+        <td>
+          <button class="user_edit" (click)="user_delete($event, userId); false">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+        </button>
+      </td>
+        <td width="20px;">
+            <a [routerLink]="['/contact', user.id]">
+            <button class="user_edit">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+              </svg>
+            </button>
+          </a>  
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pagi-list">
+    <div class="pagi" *ngFor = "let n of pages_array">
+      <a class="pagi_a" #pageNum  (click)="pagi_func($event, pageNum)">{{n+1}}</a>
+    </div>  
+  </div> 
+</div>
+</div>     

@@ -1,1 +1,27 @@
-123
+<div class="content">
+    <a routerLink="/contacts"> <- back to the list </a>
+    <div class="edit_contact-container">
+        <p class="add_contact__title">Изменить контакт</p>
+        <form class="form_new-cont" action="">
+            <label for="cont_name">Имя</label>
+            <input type="text" #editName id="name" value="{{ users.name_first }}" name="name">
+
+            <label for="cont_surname">Фамилия</label>
+            <input type="text" #editSurname id="surname" value="{{ users.name_last }}" name="surname">
+
+            <label for="cont_date">Дата рождения</label>
+            <input type="date" #editDate id="date" value="{{ users.birthday }}" name="date">
+
+            <label for="cont_email">Адрес электронной почты</label>
+            <input type="email" #editEmail id="email" value="{{ users.email }}" name="email">
+
+            <button (click)="show_edit=!show_edit" class="user_add btn btn-primary" (click)="user_edit($event, userId, editName, editSurname, editDate, editEmail); false">Изменить запись</button>
+            <button class="user_edit" (click)="user_delete($event, userId); false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                </svg>
+            </button>    
+        </form>
+    </div>
+</div>

@@ -1,67 +1,47 @@
 <div class="content">
-    back to the <a routerLink="/main">main menu</a>  
   <div style="text-align:center"> 
     <h1 class="main_title">
-    Приложение {{ title }}
+   Your {{ title }}
     </h1>
   </div>
   <div class="b-container">
-
       <div class="contact_actions">
-          <label for="filterName">Поиск по имени</label>
+          <label for="filterName">find by name</label>
           <input type="text" #filterName (keyup)=user_filter($event,filterName) >
     
-          <label for="filterEmail">Поиск по email</label>
+          <label for="filterEmail">find by email</label>
           <input type="text" #filterEmail (keyup)=user_filter_email($event,filterEmail) >
     
-        <button (click)="add_cont=!add_cont" class="btn_new-cont btn btn-primary">Добавить контакт</button>  
+        <button (click)="add_cont=!add_cont" class="btn_new-cont btn btn-primary">add</button>  
     
         <div [ngClass]="add_cont ? 'opened' : 'closed'" class="add_contact-container">
-          <p class="add_contact__title">Добавить новый контакт</p>
-          <form action="" class="form_new-cont">
-            <label for="cont_name">Имя</label>
-            <input type="text" #newName id="name" name="name">
+          <p class="add_contact__title">New contact</p>
+          <form [formGroup]='rForm' class="form_new-cont">
+            <label for="cont_name">First name</label>
+            <input [ngClass]="rForm.controls['first_name'] && tryAdd ? 'incorrect' : correct" formControlName="first_name" type="text" #newName id="name" name="name">
+            
+            <label for="cont_surname">Last name</label>
+            <input [ngClass]="rForm.controls['last_name'] && tryAdd ? 'incorrect' : correct" formControlName="last_name" type="text" #newSurname id="surname" name="surname">
     
-            <label for="cont_surname">Фамилия</label>
-            <input type="text" #newSurname id="surname" name="surname">
+            <label for="cont_date">Birthday</label>
+            <input [ngClass]="rForm.controls['birthday'] && tryAdd ? 'incorrect' : correct" formControlName="birthday" type="date" #newDate id="date" name="date">
     
-            <label for="cont_date">Дата рождения</label>
-            <input type="date" #newDate id="date" name="date">
+            <label for="cont_email">Email</label>
+            <input [ngClass]="rForm.controls['email'] && tryAdd ? 'incorrect' : correct" formControlName="email" type="email" #newEmail id="email" name="email">
     
-            <label for="cont_email">Адрес электронной почты</label>
-            <input type="email" #newEmail id="email" name="email">
-    
-            <button (click)="add_cont=!add_cont" class="user_add btn btn-primary" (click)="user_add($event, newName, newSurname, newDate, newEmail); false">Добавить запись</button>
-          </form>
-        </div>
-        <div [ngClass]="show_edit ? 'opened' : 'closed'" class="edit_contact-container">
-          <p class="add_contact__title">Изменить контакт</p>
-          <form class="form_new-cont" action="">
-            <label for="cont_name">Имя</label>
-            <input type="text" #editName id="name" value="{{ userName }}" name="name">
-    
-            <label for="cont_surname">Фамилия</label>
-            <input type="text" #editSurname id="surname" value="{{ userSurname }}" name="surname">
-    
-            <label for="cont_date">Дата рождения</label>
-            <input type="date" #editDate id="date" value="{{ userDate }}" name="date">
-    
-            <label for="cont_email">Адрес электронной почты</label>
-            <input type="email" #editEmail id="email" value="{{ userEmail }}" name="email">
-            <button (click)="show_edit=!show_edit" class="user_add btn btn-primary" (click)="user_edit($event, userId, editName, editSurname, editDate, editEmail); false">Изменить запись</button>
+            <button class="user_add btn btn-success" (click)="user_add($event, newName, newSurname, newDate, newEmail); false">ok</button>
           </form>
         </div>
       </div>   
-
     <div class="mask" (click)="add_cont=!add_cont;" [ngClass]="add_cont ? 'opened' : 'closed'"></div>
     <div class="mask" (click)="show_edit=!show_edit;" [ngClass]="show_edit ? 'opened' : 'closed'"></div>
     <table class="main_table table table-light table-striped" cellpadding="5">
       <thead>
         <th>id</th>
-        <th>Имя</th>
-        <th>Фамилия</th>
-        <th>Дата рождения</th>
-        <th>Адрес электронной почты</th>
+        <th>first name</th>
+        <th>last name</th>
+        <th>birthday</th>
+        <th>email</th>
         <th></th>
         <th></th>
       </thead>

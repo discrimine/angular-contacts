@@ -1,13 +1,15 @@
-import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Injectable } from '@angular/core';
+import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-@Injectable()
-export class UsersService{
+@Injectable({
+  providedIn: 'root'
+})
+export class UsersServiceService {
 
-    constructor( private http: Http ){}
-    
-    getUsers(apiUrl){
+  constructor( private http: Http ) { }
+
+     getUsers(apiUrl){
         let headers = new Headers();
         headers.append("Accept", "application/vnd.api+json");
         headers.append("Accept-Language", "uk");
@@ -20,7 +22,6 @@ export class UsersService{
         .map( response => response.data)
     };
 
+    
 
-   
-      
 }
