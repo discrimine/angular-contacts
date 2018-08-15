@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UsersService } from '../../user.service';
+import { UsersServiceService } from '../../services/users-service.service';
 
 @Component({
   selector: 'app-contact',
@@ -9,7 +9,7 @@ import { UsersService } from '../../user.service';
 })
 export class ContactComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute, private usersService: UsersService) {
+  constructor(private route: ActivatedRoute, private usersService: UsersServiceService) {
     
    }
 
@@ -40,27 +40,10 @@ export class ContactComponent implements OnInit {
     })
   };
 
-
-  user_delete(event: any, userId) {
-    fetch("http://angulartest.vivasg.com/human/" + userId.innerText, {
-      method: 'delete',
-      mode: 'cors',
-      headers: {
-        "Accept": "application/vnd.api+json",
-        "Accept-Encoding": "utf-8",
-        "Accept-Language": "uk",
-        "Content-Type": "application/vnd.api+json",
-        "Content-Language": "uk"
-      }
-    });
-    setTimeout(() => {
-      this.usersService.getUsers("http://angulartest.vivasg.com/human?page[limit]=5").subscribe(users => {
-        this.users = users;
-      })
-    }, 100);
+  user_delete(){
+    this.usersService.user_delete(this.id);
   };
-
-
+  
   userName;
   ngOnInit() {
     this.route.params
@@ -70,9 +53,8 @@ export class ContactComponent implements OnInit {
     this.usersService.getUsers("http://angulartest.vivasg.com/human/"+this.id)
     .subscribe( users => {
       this.users = users['attributes'];
-      console.log(this.users)
     });
-    
+  
   }
 
 }
