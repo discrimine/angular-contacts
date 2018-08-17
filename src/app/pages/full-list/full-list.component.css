@@ -8,3 +8,16 @@
 .sort_but{
     margin: 0 10px;
 }
+.conf_buttons{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.incorrect{
+    border-color: red;
+}
+.incorrect.valid{
+    text-align: center;
+    color: red;
+    margin-top: 10px;
+}

@@ -8,13 +8,11 @@ import { Title, Meta } from '@angular/platform-browser';
 })
 export class MainComponent implements OnInit {
 
-  constructor(titleService: Title, meta: Meta) {
-    titleService.setTitle('Home');
-    meta.addTag({ name: 'keywords', content: 'contacts, home, main' });
-    meta.addTag({ name: 'description', content: 'beautifull contact list' })
-  }
+  constructor(private titleService: Title, private meta: Meta) {}
 
   ngOnInit() {
+    this.titleService.setTitle('Home');
+    this.meta.addTag({ name: 'keywords', content: 'contacts, home, main' });
+    this.meta.addTag({ name: 'description', content: 'beautifull contact list' });
   }
-
 }

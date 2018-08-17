@@ -8,7 +8,6 @@ import { RouterModule } from '../../node_modules/@angular/router';
 
 import { ContactComponent } from './pages/contact/contact.component';
 import { NotFound404Component } from './pages/not-found404/not-found404.component';
-import { ContactsComponent } from './pages/contacts/contacts.component';
 import { RoutingRoutingModule } from './routing/routing-routing.module';
 import { MainComponent } from './pages/main/main.component';
 import { HeaderComponent } from './structure/header/header.component';
@@ -19,7 +18,6 @@ import { FullListComponent } from './pages/full-list/full-list.component';
     AppComponent,
     ContactComponent,
     NotFound404Component,
-    ContactsComponent,
     MainComponent,
     HeaderComponent,
     FullListComponent,
