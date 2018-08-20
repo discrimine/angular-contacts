@@ -23,16 +23,16 @@
         <p class="add_contact__title">New contact</p>
         <form [formGroup]='rForm' class="form_new-cont">
           <label for="cont_name">First name</label>
-          <input [ngClass]="rForm.controls['first_name'] && tryAdd ? 'incorrect' : correct" formControlName="first_name" type="text" #newName id="name" name="name">
+          <input [ngClass]="rForm.controls['first_name'].invalid && tryAdd ? 'incorrect' : correct" formControlName="first_name" type="text" #newName id="name" name="name">
 
           <label for="cont_surname">Last name</label>
-          <input [ngClass]="rForm.controls['last_name'] && tryAdd ? 'incorrect' : correct" formControlName="last_name" type="text" #newSurname id="surname" name="surname">
+          <input [ngClass]="rForm.controls['last_name'].invalid && tryAdd ? 'incorrect' : correct" formControlName="last_name" type="text" #newSurname id="surname" name="surname">
 
           <label for="cont_date">Birthday</label>
-          <input [ngClass]="rForm.controls['birthday'] && tryAdd ? 'incorrect' : correct" formControlName="birthday" type="date" #newDate id="date" name="date">
+          <input [ngClass]="rForm.controls['birthday'].invalid && tryAdd ? 'incorrect' : correct" formControlName="birthday" type="date" #newDate id="date" name="date">
 
           <label for="cont_email">Email</label>
-          <input [ngClass]="rForm.controls['email'] && tryAdd ? 'incorrect' : correct" formControlName="email" type="email" #newEmail id="email" name="email">
+          <input [ngClass]="rForm.controls['email'].invalid && tryAdd ? 'incorrect' : correct" formControlName="email" type="email" #newEmail id="email" name="email">
 
           <button class="user_add btn btn-success" (click)="userAdd($event, newName, newSurname, newDate, newEmail); false">ok</button>
           <p class="incorrect valid" *ngIf="tryAdd"> incorrect data </p>
@@ -40,10 +40,10 @@
       </div>
 
     <div class="contact_actions">
-        <label for="filterName">Поиск по имени</label>
+        <label for="filterName">find by first name</label>
         <input type="text" #filterName (keyup)="user_filter($event, 'name_first', filterName)" >
 
-        <label for="filterEmail">Поиск по email</label>
+        <label for="filterEmail">find by email</label>
         <input type="text" #filterEmail (keyup)="user_filter($event, 'email', filterEmail)" >
 
     </div>

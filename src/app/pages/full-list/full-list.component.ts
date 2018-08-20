@@ -37,11 +37,14 @@ export class FullListComponent implements OnInit {
   }
 
   userDelete(id) {
-    this.usersService.deleteUser(id.innerText);
-    this.usersService.getUsers('id', '999', '0')
-    .subscribe(users => {
-      this.users = users;
-    });
+    let confirmDelete = confirm('are u sure?');
+    if (confirmDelete){
+      this.usersService.deleteUser(id.innerText);
+      setTimeout(this.usersService.getUsers('id', '999', '0')
+      .subscribe(users => {
+        this.users = users;
+      }), 1000);
+    }
   }
 
   userAdd(event: any, newName, newSurname, newDate, newEmail) {
@@ -61,10 +64,11 @@ export class FullListComponent implements OnInit {
       this.showAddCont = false;
       this.tryAdd = false;
       this.usersService.addUser(JSON.stringify(bodyObj));
-      this.usersService.getUsers('id', '999', '0')
-      .subscribe( (users) => {
-        this.users = users;
-      });
+      setTimeout(
+        this.usersService.getUsers('id', '999', '0')
+        .subscribe( (users) => {
+          this.users = users;
+      }), 500);
     } else {
       this.tryAdd = true;
     }
