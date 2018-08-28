@@ -1,10 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ReturnStatement } from '@angular/compiler';
+import { Component } from '@angular/core';
 import { UsersService } from './services/users.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { URLSearchParams } from "@angular/http";
-import { stringify } from '@angular/compiler/src/util';
+
 
 @Component({
   selector: 'app-root',
@@ -21,7 +17,7 @@ export class AppComponent {
   constructor(private usersService: UsersService) {
   };
 
-  ngOnInit(page_number) {
+  ngOnInit() {
 
   }
 }

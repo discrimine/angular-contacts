@@ -1,7 +1,10 @@
+import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Http, RequestOptions, Headers, Response, HttpModule } from '@angular/http';
+import { RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
-import 'rxjs/add/operator/map';
+import { HttpClient } from '@angular/common/http'
+import { Observable } from 'rxjs';
+
 
 
 @Injectable({
@@ -14,7 +17,7 @@ export class UsersService {
   private headers: any;
   private options: any;
 
-  constructor(private http: Http, private router: Router) {
+  constructor(private http: HttpClient, private router: Router) {
     this.apiUrl = 'http://angulartest.vivasg.com/human/';
     this.users = undefined;
     this.headers = {
@@ -26,44 +29,49 @@ export class UsersService {
     this.options = new RequestOptions({ headers: this.headers });
   }
 
-  getUsers(sort, count, offset, filterType?, filterValue?) {
-    let urlOptions = '';
-    urlOptions = 'sort=' + sort + '&page[limit]=' + count + '&page[offset]=' + offset + '&filter[' + filterType + ']=' + filterValue;
+  getUsers(options?) : Observable<any> {
+    console.log(options)
+    let urlOptions: string;
+    let sortOption: string = options.sort ? '&sort=' + encodeURIComponent(options.sort) : '';
+    let countOption: string = options.count ? '&page[limit]=' + encodeURIComponent(options.count) : '';
+    let offsetOption: string = options.offset ? '&page[offset]=' + encodeURIComponent(options.offset) : '';
+    let filterOption: string = (options.filterType && options.filterValue) ? '&filter[' + encodeURIComponent(options.filterType) + ']=' + encodeURIComponent(options.filterValue) : '';
+    urlOptions = sortOption + countOption + offsetOption + filterOption;
     return this.http
-    .get(this.apiUrl + '?' + urlOptions, this.options)
-    .map( response => response.json())
-    .map( response => response.data);
+    .get(this.apiUrl + '?' + urlOptions, this.options).pipe(
+    map( response => response['data']));
   }
 
-  getUser(id) {
+  getUser(id): Observable<any> {
     return this.http
-    .get(this.apiUrl + id, this.options)
-    .map( response => response.json())
-    .map( response => response.data);
+    .get(this.apiUrl + id, this.options).pipe(
+    map( response => response['data']));
   }
 
-  sortUsers(kind) {
+  sortUsers(kind): Observable<any> {
     return this.http
     .get(this.apiUrl + '?sort=' + kind, this.options)
-    .map( response => response.json())
-    .map( response => response.data);
+    .pipe(
+      map( response => response['data'] )
+    );
   }
 
-  deleteUser(id) {
+  deleteUser(id): any {
     return this.http
     .delete(this.apiUrl + id, this.options)
     .subscribe();
   }
 
-  changeUser(id, body) {
+  changeUser(id, body): any {
     return this.http
     .patch(this.apiUrl + id, body, this.options)
     .subscribe();
   }
 
-  addUser(body) {
+  addUser(body): any {
     this.http
-    .post(this.apiUrl, body, this.options).subscribe();
+    .post(this.apiUrl, body, this.options)
+    .subscribe();
   }
 
 }

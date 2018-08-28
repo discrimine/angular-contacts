@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { Title, Meta } from '@angular/platform-browser';
-import { Observable } from 'rxjs/internal/Observable';
-import { FormControl, Validators, FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-full-list',
@@ -12,42 +12,38 @@ import { FormControl, Validators, FormGroup, FormBuilder, ReactiveFormsModule } 
 
 export class FullListComponent implements OnInit {
 
-  private users: any;
   private rForm: FormGroup;
-  private showAddCont: Boolean;
-  private tryAdd: Boolean;
+  private users: any;
+  private tryAdd: boolean;
+  private showAddCont: boolean;
 
   constructor(private usersService: UsersService, private titleService: Title, private meta: Meta, fb: FormBuilder) {
-    this.users = undefined;
     this.rForm = fb.group({
       'first_name' : [null, [Validators.required]],
       'last_name' : [null, [Validators.required]],
       'birthday' : [null, [Validators.required]],
       'email' : [null, [Validators.required, Validators.email]]
     });
+    this.users = [];
     this.showAddCont = false;
     this.tryAdd = false;
   }
 
-  usersSort(kind) {
+  usersSort(kind): void{
     this.usersService.sortUsers(kind)
     .subscribe( (users) => {
-      this.users = users;
+      this.users = users
     });
   }
 
-  userDelete(id) {
+  userDelete(id): void{
     let confirmDelete = confirm('are u sure?');
     if (confirmDelete){
       this.usersService.deleteUser(id.innerText);
-      setTimeout(this.usersService.getUsers('id', '999', '0')
-      .subscribe(users => {
-        this.users = users;
-      }), 1000);
     }
   }
 
-  userAdd(event: any, newName, newSurname, newDate, newEmail) {
+  userAdd(event, newName, newSurname, newDate, newEmail): void{
     if (this.rForm.valid) {
       const bodyObj = {
         'data': {
@@ -63,20 +59,25 @@ export class FullListComponent implements OnInit {
       alert('new cont is added');
       this.showAddCont = false;
       this.tryAdd = false;
-      this.usersService.addUser(JSON.stringify(bodyObj));
-      setTimeout(
-        this.usersService.getUsers('id', '999', '0')
-        .subscribe( (users) => {
-          this.users = users;
-      }), 500);
+      this.usersService.addUser(JSON.stringify(bodyObj))
+      // .success(() => {
+      //   this.usersService.getUsers()
+      //   .subscribe( (users) =>{
+      //     this.users = users;
+      //   })
+      // })
     } else {
       this.tryAdd = true;
     }
   }
 
-  user_filter(e, type, filterValue) {
-    this.usersService.getUsers('id', '999', '0', type, filterValue.value).subscribe(users => {
-      this.users = users;
+  user_filter(event, filterType, filterValue) {
+    this.usersService.getUsers({
+      filterType : filterType,
+      filterValue : filterValue.value
+    })
+    .subscribe( (users) => {
+      this.users = users
     });
   }
 
@@ -85,10 +86,12 @@ export class FullListComponent implements OnInit {
     this.meta.addTag({ name: 'keywords', content: 'full, list, contacts' });
     this.meta.addTag({ name: 'description', content: 'full list of your contacts' });
 
-    this.usersService.getUsers('id', '999', '0')
-    .subscribe(users => {
-      this.users = users;
-    });
+    this.usersService.getUsers({
+      sort : 'id',
+    })
+    .subscribe( (users) => {
+      this.users = users
+    })
 
   }
 }
