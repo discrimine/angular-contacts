@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../services/users.service';
+import { mergeMap } from 'rxjs/operators';
+import { Observablegit  } from 'rxjs';
 
 @Component({
   selector: 'app-contact',
@@ -38,7 +40,21 @@ export class ContactComponent implements OnInit {
   }
 
   user_delete() {
-    this.usersService.deleteUser(this.id);
+    this.usersService.deleteUser(this.id)
+    .pipe(
+      mergeMap(
+        (): Observable<any> => {
+          return this.usersService.getUsers({
+            sort : 'id',
+          });
+        }
+      )
+    )
+    .subscribe(
+      (users: any[]) => {
+        this.users = users;
+      }
+    );
     alert('successfuly deleted');
     this.router.navigate(['/fullList']);
   }
