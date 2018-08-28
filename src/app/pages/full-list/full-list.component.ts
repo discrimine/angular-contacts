@@ -3,6 +3,7 @@ import { UsersService } from '../../services/users.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-full-list',
@@ -16,6 +17,7 @@ export class FullListComponent implements OnInit {
   private users: any;
   private tryAdd: boolean;
   private showAddCont: boolean;
+  private errorMsg: any;
 
   constructor(private usersService: UsersService, private titleService: Title, private meta: Meta, fb: FormBuilder) {
     this.rForm = fb.group({
@@ -27,23 +29,50 @@ export class FullListComponent implements OnInit {
     this.users = [];
     this.showAddCont = false;
     this.tryAdd = false;
+
   }
 
-  usersSort(kind): void{
+  usersSort(kind): void {
     this.usersService.sortUsers(kind)
     .subscribe( (users) => {
-      this.users = users
+      this.users = users;
     });
   }
 
-  userDelete(id): void{
-    let confirmDelete = confirm('are u sure?');
-    if (confirmDelete){
-      this.usersService.deleteUser(id.innerText);
+  userDeleteCold(id): void {
+    const confirmDelete = confirm('are u sure?');
+    if (confirmDelete) {
+      this.usersService
+      .deleteUserCold(id.innerText)
+      .subscribe( (users) => {
+        this.users = users;
+      });
     }
   }
 
-  userAdd(event, newName, newSurname, newDate, newEmail): void{
+  userDelete(id): void {
+    const confirmDelete = confirm('are u sure?');
+    if (confirmDelete) {
+      this.usersService
+      .deleteUser(id.innerText)
+      .pipe(
+        mergeMap(
+          (): Observable<any> => {
+            return this.usersService.getUsers({
+              sort : 'id',
+            });
+          }
+        )
+      )
+      .subscribe(
+        (users: any[]) => {
+          this.users = users;
+        }
+      );
+    }
+  }
+
+  userAdd(event, newName, newSurname, newDate, newEmail): void {
     if (this.rForm.valid) {
       const bodyObj = {
         'data': {
@@ -60,12 +89,20 @@ export class FullListComponent implements OnInit {
       this.showAddCont = false;
       this.tryAdd = false;
       this.usersService.addUser(JSON.stringify(bodyObj))
-      // .success(() => {
-      //   this.usersService.getUsers()
-      //   .subscribe( (users) =>{
-      //     this.users = users;
-      //   })
-      // })
+      .pipe(
+        mergeMap(
+          (): Observable<any> => {
+            return this.usersService.getUsers({
+              sort : 'id'
+            });
+          }
+        )
+      )
+      .subscribe(
+        (users: any[]) => {
+          this.users = users;
+        }
+      );
     } else {
       this.tryAdd = true;
     }
@@ -77,7 +114,7 @@ export class FullListComponent implements OnInit {
       filterValue : filterValue.value
     })
     .subscribe( (users) => {
-      this.users = users
+      this.users = users;
     });
   }
 
@@ -89,9 +126,13 @@ export class FullListComponent implements OnInit {
     this.usersService.getUsers({
       sort : 'id',
     })
-    .subscribe( (users) => {
-      this.users = users
-    })
+    .subscribe(
+      (users) => this.users = users,
+      (error) => {
+        console.log(error.errors);
+        this.errorMsg = error.errors;
+      }
+    );
 
   }
 }

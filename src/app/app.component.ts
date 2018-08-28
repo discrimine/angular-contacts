@@ -15,10 +15,6 @@ export class AppComponent {
   show_edit;
 
   constructor(private usersService: UsersService) {
-  };
-
-  ngOnInit() {
-
   }
 }
 
