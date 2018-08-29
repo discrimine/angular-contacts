@@ -13,6 +13,7 @@ export class ContactComponent implements OnInit {
 
   private id: number;
   private users: any;
+  private errorMsg: any;
 
   constructor(private route: ActivatedRoute, private router: Router, private usersService: UsersService) {
     this.id = 0;
@@ -31,12 +32,20 @@ export class ContactComponent implements OnInit {
         }
       }
     });
-    this.usersService.changeUser(this.id, body);
+    this.usersService.changeUser(this.id, body)
+    .pipe(
+      mergeMap(
+        (): Observable<any> => {
+          return this.usersService.getUser(this.id);
+        }
+      )
+    )
+    .subscribe(
+      (users: any[]) => {
+        this.users = users['attributes'];
+      }
+    );
     alert('successfully changed');
-    this.usersService.getUser(this.id)
-    .subscribe( users => {
-      this.users = users['attributes'];
-    });
   }
 
   user_delete() {
@@ -65,9 +74,12 @@ export class ContactComponent implements OnInit {
       this.id = + params['id'];
     });
     this.usersService.getUser(this.id)
-    .subscribe( users => {
+    .subscribe(
+    (users) => {
       this.users = users['attributes'];
-    });
+    },
+    (error) => this.errorMsg = error.errors
+  );
 
   }
 

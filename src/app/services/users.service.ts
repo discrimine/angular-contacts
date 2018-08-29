@@ -81,13 +81,14 @@ export class UsersService {
   deleteUserCold(id): any {
     return this.http
     .delete(this.apiUrl + id, this.options)
+    .catch(this.errorHandler)
     .subscribe();
   }
 
   changeUser(id, body): any {
     return this.http
     .patch(this.apiUrl + id, body, this.options)
-    .subscribe();
+    .catch(this.errorHandler);
   }
 
   addUser(body): Observable<any>  {

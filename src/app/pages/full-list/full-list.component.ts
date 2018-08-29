@@ -34,9 +34,10 @@ export class FullListComponent implements OnInit {
 
   usersSort(kind): void {
     this.usersService.sortUsers(kind)
-    .subscribe( (users) => {
-      this.users = users;
-    });
+    .subscribe(
+      (users: any[]) => this.users = users,
+      (error) => this.errorMsg = error.error
+    );
   }
 
   userDeleteCold(id): void {
@@ -44,9 +45,10 @@ export class FullListComponent implements OnInit {
     if (confirmDelete) {
       this.usersService
       .deleteUserCold(id.innerText)
-      .subscribe( (users) => {
-        this.users = users;
-      });
+      .subscribe(
+        (users: any[]) => this.users = users,
+        (error) => this.errorMsg = error.error
+      );
     }
   }
 
@@ -65,9 +67,8 @@ export class FullListComponent implements OnInit {
         )
       )
       .subscribe(
-        (users: any[]) => {
-          this.users = users;
-        }
+        (users: any[]) => this.users = users,
+        (error) => this.errorMsg = error.error
       );
     }
   }
@@ -99,9 +100,8 @@ export class FullListComponent implements OnInit {
         )
       )
       .subscribe(
-        (users: any[]) => {
-          this.users = users;
-        }
+        (users: any[]) => this.users = users,
+        (error) => this.errorMsg = error.errors
       );
     } else {
       this.tryAdd = true;
@@ -113,9 +113,10 @@ export class FullListComponent implements OnInit {
       filterType : filterType,
       filterValue : filterValue.value
     })
-    .subscribe( (users) => {
-      this.users = users;
-    });
+    .subscribe(
+      (users) => this.users = users,
+      (error) => this.errorMsg = error.errors
+    );
   }
 
   ngOnInit() {
@@ -128,10 +129,7 @@ export class FullListComponent implements OnInit {
     })
     .subscribe(
       (users) => this.users = users,
-      (error) => {
-        console.log(error.errors);
-        this.errorMsg = error.errors;
-      }
+      (error) => this.errorMsg = error.errors
     );
 
   }
