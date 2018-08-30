@@ -4,9 +4,15 @@
     Full contact list
   </h1>
 </div>
-<div *ngFor="let error of errorMsg" class="ded">
-  {{ error.status }}
-  {{ error.title }}
+<div *ngFor="let errs of errorMsg" class="errs">
+  <div *ngFor="let error of errs.warning" class="errsWarning">
+    {{ error.status }}
+    {{ error.title }}
+  </div>
+  <div *ngFor="let error of errs.critical" class="errsCritical">
+    {{ error.status }}
+    {{ error.title }}
+  </div>
 </div>
 <div class="b-container">
   <div class="conf_buttons">
@@ -77,9 +83,6 @@
                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                 <path d="M0 0h24v24H0z" fill="none"/>
             </svg>
-        </button>
-        <button class="user_edit" (click)="userDeleteCold(userId); false">
-         <img src="../../../assets/snow.svg">
         </button>
       </td>
         <td width="20px;">

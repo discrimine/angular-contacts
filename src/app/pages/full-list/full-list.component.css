@@ -21,3 +21,9 @@
     color: red;
     margin-top: 10px;
 }
+.errsWarning{
+    background-color: yellow;
+}
+.errsCritical{
+    background-color: red;
+}

@@ -5,8 +5,6 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -63,26 +61,10 @@ export class UsersService {
     .catch(this.errorHandler);
   }
 
-  sortUsers(kind): Observable<any> {
-    return this.http
-    .get(this.apiUrl + '?sort=' + kind, this.options)
-    .pipe(
-      map( response => response['data'] )
-    )
-    .catch(this.errorHandler);
-  }
-
   deleteUser(id): Observable<any> {
     return this.http
     .delete(this.apiUrl + id, this.options)
     .catch(this.errorHandler);
-  }
-
-  deleteUserCold(id): any {
-    return this.http
-    .delete(this.apiUrl + id, this.options)
-    .catch(this.errorHandler)
-    .subscribe();
   }
 
   changeUser(id, body): any {

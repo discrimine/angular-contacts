@@ -19,6 +19,15 @@ export class ContactComponent implements OnInit {
     this.id = 0;
     this.users = {};
    }
+  catchErr(error) {
+    error.errors.map( err => {
+      if (err.status === '503' || err.status === '504') {
+        this.errorMsg[0].warning.push(err);
+      } else {
+        this.errorMsg[0].critical.push(err);
+      }
+    });
+  }
 
   user_edit(event: any, editName, editSurname, editDate, editEmail ) {
     const body = JSON.stringify({
@@ -43,7 +52,8 @@ export class ContactComponent implements OnInit {
     .subscribe(
       (users: any[]) => {
         this.users = users['attributes'];
-      }
+      },
+      (error) => this.catchErr(error)
     );
     alert('successfully changed');
   }
@@ -62,7 +72,8 @@ export class ContactComponent implements OnInit {
     .subscribe(
       (users: any[]) => {
         this.users = users;
-      }
+      },
+      (error) => this.catchErr(error)
     );
     alert('successfuly deleted');
     this.router.navigate(['/fullList']);
@@ -78,7 +89,7 @@ export class ContactComponent implements OnInit {
     (users) => {
       this.users = users['attributes'];
     },
-    (error) => this.errorMsg = error.errors
+    (error) => this.catchErr(error)
   );
 
   }
