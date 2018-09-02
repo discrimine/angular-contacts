@@ -27,3 +27,9 @@
 .errsCritical{
     background-color: red;
 }
+.b-container{
+    display: block;
+}
+.errs{
+    margin: 50px 0;
+}

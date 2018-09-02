@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
@@ -61,9 +61,16 @@ export class UsersService {
     .catch(this.errorHandler);
   }
 
-  deleteUser(id): Observable<any> {
+  deleteUser(id, apiParams?): Observable<any> {
     return this.http
     .delete(this.apiUrl + id, this.options)
+    .pipe(
+      mergeMap(
+        (): Observable<any> => {
+          return this.getUsers(apiParams);
+        }
+      )
+    )
     .catch(this.errorHandler);
   }
 
@@ -73,9 +80,16 @@ export class UsersService {
     .catch(this.errorHandler);
   }
 
-  addUser(body): Observable<any>  {
+  addUser(body, apiParams): Observable<any>  {
     return this.http
     .post(this.apiUrl, body, this.options)
+    .pipe(
+      mergeMap(
+        (): Observable<any> => {
+          return this.getUsers(apiParams);
+        }
+      )
+    )
     .catch(this.errorHandler);
   }
 }

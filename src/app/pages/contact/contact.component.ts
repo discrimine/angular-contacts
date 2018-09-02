@@ -42,13 +42,6 @@ export class ContactComponent implements OnInit {
       }
     });
     this.usersService.changeUser(this.id, body)
-    .pipe(
-      mergeMap(
-        (): Observable<any> => {
-          return this.usersService.getUser(this.id);
-        }
-      )
-    )
     .subscribe(
       (users: any[]) => {
         this.users = users['attributes'];
@@ -60,15 +53,6 @@ export class ContactComponent implements OnInit {
 
   user_delete() {
     this.usersService.deleteUser(this.id)
-    .pipe(
-      mergeMap(
-        (): Observable<any> => {
-          return this.usersService.getUsers({
-            sort : 'id',
-          });
-        }
-      )
-    )
     .subscribe(
       (users: any[]) => {
         this.users = users;

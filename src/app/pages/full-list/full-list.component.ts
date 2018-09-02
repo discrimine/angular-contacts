@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { mergeMap, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-full-list',
@@ -53,6 +51,9 @@ export class FullListComponent implements OnInit {
         this.errorMsg[0].critical.push(err);
       }
     });
+    setTimeout(() => {
+      this.errorMsg = [];
+    }, 5000);
   }
 
   usersSort(kind): void {
@@ -68,14 +69,7 @@ export class FullListComponent implements OnInit {
     const confirmDelete = confirm('are u sure?');
     if (confirmDelete) {
       this.usersService
-      .deleteUser(id.innerText)
-      .pipe(
-        mergeMap(
-          (): Observable<any> => {
-            return this.usersService.getUsers(this.apiParams);
-          }
-        )
-      )
+      .deleteUser(id.innerText, this.apiParams)
       .subscribe(
         (users: any[]) => this.users = users,
         (error) => this.catchErr(error)
@@ -99,14 +93,7 @@ export class FullListComponent implements OnInit {
       alert('new cont is added');
       this.showAddCont = false;
       this.tryAdd = false;
-      this.usersService.addUser(JSON.stringify(bodyObj))
-      .pipe(
-        mergeMap(
-          (): Observable<any> => {
-            return this.usersService.getUsers(this.apiParams);
-          }
-        )
-      )
+      this.usersService.addUser(JSON.stringify(bodyObj), this.apiParams)
       .subscribe(
         (users: any[]) => this.users = users,
         (error) => this.catchErr(error)

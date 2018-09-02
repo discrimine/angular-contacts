@@ -4,16 +4,18 @@
     Full contact list
   </h1>
 </div>
-<div *ngFor="let errs of errorMsg" class="errs">
-  <div *ngFor="let error of errs.warning" class="errsWarning">
-    {{ error.status }}
-    {{ error.title }}
+<div *ngIf="errorMsg.length" class="errs-container">
+  <div *ngFor="let errs of errorMsg" class="errs">
+    <div *ngFor="let error of errs.warning" class="errsWarning">
+      {{ error.status }}
+      {{ error.title }}
+    </div>
+    <div *ngFor="let error of errs.critical" class="errsCritical">
+      {{ error.status }}
+      {{ error.title }}
+    </div>
   </div>
-  <div *ngFor="let error of errs.critical" class="errsCritical">
-    {{ error.status }}
-    {{ error.title }}
-  </div>
-</div>
+</div>  
 <div class="b-container">
   <div class="conf_buttons">
     <div class="sort">
