@@ -43,26 +43,33 @@ export class FullListComponent implements OnInit {
     };
   }
 
+  getUsers() {
+    this.usersService.getUsers(this.apiParams)
+    .subscribe(
+      (users) => this.users = users,
+      (error) => this.catchErr(error)
+    );
+  }
+
   catchErr(error) {
     error.errors.map( err => {
       if (err.status === '503' || err.status === '504') {
         this.errorMsg[0].warning.push(err);
+        setTimeout( () => {
+          this.errorMsg[0].warning.pop();
+        }, 5000);
       } else {
         this.errorMsg[0].critical.push(err);
+        setTimeout( () => {
+          this.errorMsg[0].critical.pop();
+        }, 5000);
       }
     });
-    setTimeout(() => {
-      this.errorMsg = [];
-    }, 5000);
   }
 
   usersSort(kind): void {
     this.apiParams.sort = kind;
-    this.usersService.getUsers(this.apiParams)
-    .subscribe(
-      (users: any[]) => this.users = users,
-      (error) => this.catchErr(error)
-    );
+    this.getUsers();
   }
 
   userDelete(id): void {
@@ -106,11 +113,7 @@ export class FullListComponent implements OnInit {
   user_filter(event, filterType, filterValue) {
     this.apiParams.filterType = filterType;
     this.apiParams.filterValue = filterValue.value;
-    this.usersService.getUsers(this.apiParams)
-    .subscribe(
-      (users) => this.users = users,
-      (error) => this.catchErr(error)
-    );
+    this.getUsers();
   }
 
   ngOnInit() {
@@ -118,10 +121,6 @@ export class FullListComponent implements OnInit {
     this.meta.addTag({ name: 'keywords', content: 'full, list, contacts' });
     this.meta.addTag({ name: 'description', content: 'full list of your contacts' });
 
-    this.usersService.getUsers(this.apiParams)
-    .subscribe(
-      (users) => this.users = users,
-      (error) => this.catchErr(error)
-    );
+    this.getUsers();
   }
 }
