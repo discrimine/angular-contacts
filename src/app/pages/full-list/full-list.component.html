@@ -35,10 +35,10 @@
         <p class="add_contact__title">New contact</p>
         <form [formGroup]='rForm' class="form_new-cont">
           <label for="cont_name">First name</label>
-          <input [ngClass]="rForm.controls['first_name'].invalid && tryAdd ? 'incorrect' : correct" formControlName="first_name" type="text" #newName id="name" name="name">
+          <input [ngClass]="rForm.controls['name_first'].invalid && tryAdd ? 'incorrect' : correct" formControlName="name_first" type="text" #newName id="name" name="name">
 
           <label for="cont_surname">Last name</label>
-          <input [ngClass]="rForm.controls['last_name'].invalid && tryAdd ? 'incorrect' : correct" formControlName="last_name" type="text" #newSurname id="surname" name="surname">
+          <input [ngClass]="rForm.controls['name_last'].invalid && tryAdd ? 'incorrect' : correct" formControlName="name_last" type="text" #newSurname id="surname" name="surname">
 
           <label for="cont_date">Birthday</label>
           <input [ngClass]="rForm.controls['birthday'].invalid && tryAdd ? 'incorrect' : correct" formControlName="birthday" type="date" #newDate id="date" name="date">
@@ -74,7 +74,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let user of users">
-        <td #userId> {{ user.id }}</td>
+        <td #userId > {{ user.id }}</td>
         <td #userName> {{ user.attributes.name_first }}</td>
         <td #userSurname> {{ user.attributes.name_last }}</td>
         <td #userDate> {{ user.attributes.birthday | date }}</td>

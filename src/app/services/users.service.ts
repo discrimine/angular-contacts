@@ -1,9 +1,10 @@
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, catchError, publishReplay } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
+import { Users } from '../services/users';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class UsersService {
     return throwError(error.error || 'Server Error');
   }
 
-  getUsers(options?): Observable<any> {
+  getUsers(options?): Observable<Users> {
     const urlOptions: string[] = [];
     if (options.sort) {
       urlOptions.push('sort=' + encodeURIComponent(options.sort));
@@ -61,35 +62,34 @@ export class UsersService {
     .catch(this.errorHandler);
   }
 
-  deleteUser(id, apiParams?): Observable<any> {
+  deleteUser(id): Observable<any> {
     return this.http
     .delete(this.apiUrl + id, this.options)
-    .pipe(
-      mergeMap(
-        (): Observable<any> => {
-          return this.getUsers(apiParams);
-        }
-      )
-    )
     .catch(this.errorHandler);
   }
 
-  changeUser(id, body): any {
+  changeUser(id, body): Observable<any> {
     return this.http
     .patch(this.apiUrl + id, body, this.options)
     .catch(this.errorHandler);
   }
 
-  addUser(body, apiParams): Observable<any>  {
+  addUser(values): Observable<any>  {
+    const body = JSON.stringify({
+      'data' : {
+        'type' : 'human',
+        'attributes' : {
+          'name_first' : values.name_first,
+          'name_last' : values.name_last,
+          'birthday' : values.birthday,
+          'email' : values.email
+        }
+      }
+    });
     return this.http
     .post(this.apiUrl, body, this.options)
     .pipe(
-      mergeMap(
-        (): Observable<any> => {
-          return this.getUsers(apiParams);
-        }
-      )
-    )
-    .catch(this.errorHandler);
+      catchError(this.errorHandler)
+    );
   }
 }

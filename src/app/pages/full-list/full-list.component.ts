@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { UsersService } from '../../services/users.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { Users } from '../../services/users';
 
 @Component({
   selector: 'app-full-list',
@@ -12,20 +15,24 @@ import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 export class FullListComponent implements OnInit {
 
   private rForm: FormGroup;
-  private users: any;
   private tryAdd: boolean;
   private showAddCont: boolean;
   private errorMsg: any;
   private apiParams: any;
+  private users: Users;
 
-  constructor(private usersService: UsersService, private titleService: Title, private meta: Meta, fb: FormBuilder) {
+  constructor(
+    private usersService: UsersService,
+    private titleService: Title,
+    private meta: Meta,
+    fb: FormBuilder
+  ) {
     this.rForm = fb.group({
-      'first_name' : [null, [Validators.required]],
-      'last_name' : [null, [Validators.required]],
+      'name_first' : [null, [Validators.required]],
+      'name_last' : [null, [Validators.required]],
       'birthday' : [null, [Validators.required]],
       'email' : [null, [Validators.required, Validators.email]]
     });
-    this.users = [];
     this.showAddCont = false;
     this.tryAdd = false;
     this.errorMsg = [{
@@ -43,10 +50,18 @@ export class FullListComponent implements OnInit {
     };
   }
 
-  getUsers() {
-    this.usersService.getUsers(this.apiParams)
+  getUsers(): Observable<Users> {
+    return this.usersService.getUsers(this.apiParams);
+  }
+
+  loadUsers(users): void {
+    this.users = users;
+  }
+
+  showUsers(): void {
+    this.getUsers()
     .subscribe(
-      (users) => this.users = users,
+      (users) => this.loadUsers(users),
       (error) => this.catchErr(error)
     );
   }
@@ -69,16 +84,23 @@ export class FullListComponent implements OnInit {
 
   usersSort(kind): void {
     this.apiParams.sort = kind;
-    this.getUsers();
+    this.showUsers();
   }
 
   userDelete(id): void {
     const confirmDelete = confirm('are u sure?');
     if (confirmDelete) {
       this.usersService
-      .deleteUser(id.innerText, this.apiParams)
+      .deleteUser(id.innerText)
+      .pipe(
+        mergeMap(
+          (): Observable<Users> => {
+            return this.getUsers();
+          }
+        )
+      )
       .subscribe(
-        (users: any[]) => this.users = users,
+        (users: Users) => this.loadUsers(users),
         (error) => this.catchErr(error)
       );
     }
@@ -86,25 +108,22 @@ export class FullListComponent implements OnInit {
 
   userAdd(event, newName, newSurname, newDate, newEmail): void {
     if (this.rForm.valid) {
-      const bodyObj = {
-        'data': {
-          'type': 'human',
-          'attributes' : {
-            'name_first' : newName.value,
-            'name_last' : newSurname.value,
-            'birthday' : newDate.value,
-            'email' : newEmail.value
-          }
-        }
-      };
-      alert('new cont is added');
+      const bodyObj: Users = this.rForm.value;
       this.showAddCont = false;
       this.tryAdd = false;
-      this.usersService.addUser(JSON.stringify(bodyObj), this.apiParams)
+      this.usersService.addUser(bodyObj)
+      .pipe(
+        mergeMap(
+          (): Observable<Users> => {
+            return this.getUsers();
+          }
+        )
+      )
       .subscribe(
-        (users: any[]) => this.users = users,
+        (users: Users) => this.loadUsers(users),
         (error) => this.catchErr(error)
       );
+      alert('new cont is added');
     } else {
       this.tryAdd = true;
     }
@@ -113,7 +132,7 @@ export class FullListComponent implements OnInit {
   user_filter(event, filterType, filterValue) {
     this.apiParams.filterType = filterType;
     this.apiParams.filterValue = filterValue.value;
-    this.getUsers();
+    this.showUsers();
   }
 
   ngOnInit() {
@@ -121,6 +140,6 @@ export class FullListComponent implements OnInit {
     this.meta.addTag({ name: 'keywords', content: 'full, list, contacts' });
     this.meta.addTag({ name: 'description', content: 'full list of your contacts' });
 
-    this.getUsers();
+    this.showUsers();
   }
 }
