@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../services/users.service';
-import { mergeMap } from 'rxjs/operators';
-import { Observable  } from 'rxjs';
+
 
 @Component({
   selector: 'app-contact',
@@ -51,7 +50,7 @@ export class ContactComponent implements OnInit {
     alert('successfully changed');
   }
 
-  user_delete() {
+  userDelete() {
     this.usersService.deleteUser(this.id)
     .subscribe(
       (users: any[]) => {

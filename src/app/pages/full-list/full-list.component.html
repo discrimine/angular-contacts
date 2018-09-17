@@ -35,10 +35,10 @@
         <p class="add_contact__title">New contact</p>
         <form [formGroup]='rForm' class="form_new-cont">
           <label for="cont_name">First name</label>
-          <input [ngClass]="rForm.controls['name_first'].invalid && tryAdd ? 'incorrect' : correct" formControlName="name_first" type="text" #newName id="name" name="name">
+          <input [ngClass]="rForm.controls['nameFirst'].invalid && tryAdd ? 'incorrect' : correct" formControlName="nameFirst" type="text" #newName id="name" name="name">
 
           <label for="cont_surname">Last name</label>
-          <input [ngClass]="rForm.controls['name_last'].invalid && tryAdd ? 'incorrect' : correct" formControlName="name_last" type="text" #newSurname id="surname" name="surname">
+          <input [ngClass]="rForm.controls['nameLast'].invalid && tryAdd ? 'incorrect' : correct" formControlName="nameLast" type="text" #newSurname id="surname" name="surname">
 
           <label for="cont_date">Birthday</label>
           <input [ngClass]="rForm.controls['birthday'].invalid && tryAdd ? 'incorrect' : correct" formControlName="birthday" type="date" #newDate id="date" name="date">
@@ -53,10 +53,10 @@
 
     <div class="contact_actions">
         <label for="filterName">find by first name</label>
-        <input type="text" #filterName (keyup)="user_filter($event, 'name_first', filterName)" >
+        <input type="text" #filterName (keyup)="userFilter($event, 'name_first', filterName)" >
 
         <label for="filterEmail">find by email</label>
-        <input type="text" #filterEmail (keyup)="user_filter($event, 'email', filterEmail)" >
+        <input type="text" #filterEmail (keyup)="userFilter($event, 'email', filterEmail)" >
 
     </div>
 

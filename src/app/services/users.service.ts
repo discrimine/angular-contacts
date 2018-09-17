@@ -1,10 +1,11 @@
-import { map, mergeMap, catchError, publishReplay } from 'rxjs/operators';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
-import { Users } from '../services/users';
+import { Users } from './users.model';
+import { ResponseData } from './response-data.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,7 +32,7 @@ export class UsersService {
     return throwError(error.error || 'Server Error');
   }
 
-  getUsers(options?): Observable<Users> {
+  getUsers(options?): Observable<ResponseData> {
     const urlOptions: string[] = [];
     if (options.sort) {
       urlOptions.push('sort=' + encodeURIComponent(options.sort));
@@ -53,22 +54,22 @@ export class UsersService {
       .catch(this.errorHandler);
     }
 
-  getUser(id): Observable<any> {
+  getUser(id: number): Observable<any> {
     return this.http
     .get(this.apiUrl + id, this.options)
     .pipe(
-      map( response => response['data'])
+      map( response => response['data']),
     )
     .catch(this.errorHandler);
   }
 
-  deleteUser(id): Observable<any> {
+  deleteUser(id: number): Observable<any> {
     return this.http
     .delete(this.apiUrl + id, this.options)
     .catch(this.errorHandler);
   }
 
-  changeUser(id, body): Observable<any> {
+  changeUser(id: number, body: string): Observable<any> {
     return this.http
     .patch(this.apiUrl + id, body, this.options)
     .catch(this.errorHandler);
@@ -79,8 +80,8 @@ export class UsersService {
       'data' : {
         'type' : 'human',
         'attributes' : {
-          'name_first' : values.name_first,
-          'name_last' : values.name_last,
+          'name_first' : values.nameFirst,
+          'name_last' : values.nameLast,
           'birthday' : values.birthday,
           'email' : values.email
         }

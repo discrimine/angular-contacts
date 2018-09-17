@@ -4,7 +4,8 @@ import { Title, Meta } from '@angular/platform-browser';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { Users } from '../../services/users';
+import { Users } from '../../services/users.model';
+import { ResponseData } from '../../services/response-data.model';
 
 @Component({
   selector: 'app-full-list',
@@ -28,8 +29,8 @@ export class FullListComponent implements OnInit {
     fb: FormBuilder
   ) {
     this.rForm = fb.group({
-      'name_first' : [null, [Validators.required]],
-      'name_last' : [null, [Validators.required]],
+      'nameFirst' : [null, [Validators.required]],
+      'nameLast' : [null, [Validators.required]],
       'birthday' : [null, [Validators.required]],
       'email' : [null, [Validators.required, Validators.email]]
     });
@@ -50,7 +51,7 @@ export class FullListComponent implements OnInit {
     };
   }
 
-  getUsers(): Observable<Users> {
+  getUsers(): Observable<ResponseData> {
     return this.usersService.getUsers(this.apiParams);
   }
 
@@ -66,7 +67,7 @@ export class FullListComponent implements OnInit {
     );
   }
 
-  catchErr(error) {
+  catchErr(error): void {
     error.errors.map( err => {
       if (err.status === '503' || err.status === '504') {
         this.errorMsg[0].warning.push(err);
@@ -94,13 +95,13 @@ export class FullListComponent implements OnInit {
       .deleteUser(id.innerText)
       .pipe(
         mergeMap(
-          (): Observable<Users> => {
+          (): Observable<ResponseData> => {
             return this.getUsers();
           }
         )
       )
       .subscribe(
-        (users: Users) => this.loadUsers(users),
+        (users: ResponseData) => this.loadUsers(users),
         (error) => this.catchErr(error)
       );
     }
@@ -114,13 +115,13 @@ export class FullListComponent implements OnInit {
       this.usersService.addUser(bodyObj)
       .pipe(
         mergeMap(
-          (): Observable<Users> => {
+          (): Observable<ResponseData> => {
             return this.getUsers();
           }
         )
       )
       .subscribe(
-        (users: Users) => this.loadUsers(users),
+        (users: ResponseData) => this.loadUsers(users),
         (error) => this.catchErr(error)
       );
       alert('new cont is added');
@@ -129,7 +130,7 @@ export class FullListComponent implements OnInit {
     }
   }
 
-  user_filter(event, filterType, filterValue) {
+  userFilter(event, filterType, filterValue) {
     this.apiParams.filterType = filterType;
     this.apiParams.filterValue = filterValue.value;
     this.showUsers();
