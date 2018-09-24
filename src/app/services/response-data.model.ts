@@ -4,7 +4,7 @@ export interface ResponseData {
     'attributes': {
       'birthday': string,
       'email': string,
-      'name_first': string,
-      'name_last': string,
+      'nameFirst': string,
+      'nameLast': string,
     };
 }

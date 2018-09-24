@@ -4,8 +4,9 @@ import { Title, Meta } from '@angular/platform-browser';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { Users } from '../../services/users.model';
+import { User } from '../../services/user.model';
 import { ResponseData } from '../../services/response-data.model';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-full-list',
@@ -20,7 +21,7 @@ export class FullListComponent implements OnInit {
   private showAddCont: boolean;
   private errorMsg: any;
   private apiParams: any;
-  private users: Users;
+  private users: ResponseData;
 
   constructor(
     private usersService: UsersService,
@@ -55,15 +56,15 @@ export class FullListComponent implements OnInit {
     return this.usersService.getUsers(this.apiParams);
   }
 
-  loadUsers(users): void {
+  loadUsers(users: ResponseData): void {
     this.users = users;
   }
 
   showUsers(): void {
     this.getUsers()
     .subscribe(
-      (users) => this.loadUsers(users),
-      (error) => this.catchErr(error)
+      (users: ResponseData) => this.loadUsers(users),
+      (error: HttpErrorResponse) => this.catchErr(error)
     );
   }
 
@@ -102,14 +103,14 @@ export class FullListComponent implements OnInit {
       )
       .subscribe(
         (users: ResponseData) => this.loadUsers(users),
-        (error) => this.catchErr(error)
+        (error: HttpErrorResponse) => this.catchErr(error)
       );
     }
   }
 
   userAdd(event, newName, newSurname, newDate, newEmail): void {
     if (this.rForm.valid) {
-      const bodyObj: Users = this.rForm.value;
+      const bodyObj: User = this.rForm.value;
       this.showAddCont = false;
       this.tryAdd = false;
       this.usersService.addUser(bodyObj)
@@ -122,7 +123,7 @@ export class FullListComponent implements OnInit {
       )
       .subscribe(
         (users: ResponseData) => this.loadUsers(users),
-        (error) => this.catchErr(error)
+        (error: HttpErrorResponse) => this.catchErr(error)
       );
       alert('new cont is added');
     } else {
@@ -130,7 +131,7 @@ export class FullListComponent implements OnInit {
     }
   }
 
-  userFilter(event, filterType, filterValue) {
+  userFilter(event, filterType, filterValue): void {
     this.apiParams.filterType = filterType;
     this.apiParams.filterValue = filterValue.value;
     this.showUsers();

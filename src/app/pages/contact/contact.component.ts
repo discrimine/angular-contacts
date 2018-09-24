@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../services/users.service';
-
+import { ResponseData } from '../../services/response-data.model';
+import { User } from '../../services/user.model';
+import { Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-contact',
@@ -11,14 +14,36 @@ import { UsersService } from '../../services/users.service';
 export class ContactComponent implements OnInit {
 
   private id: number;
-  private users: any;
+  private user: User;
   private errorMsg: any;
 
   constructor(private route: ActivatedRoute, private router: Router, private usersService: UsersService) {
     this.id = 0;
-    this.users = {};
+    this.errorMsg = [{
+      warning : [
+      ],
+      critical : [
+      ]
+    }];
    }
-  catchErr(error) {
+
+  getUser(): Observable<User> {
+    return this.usersService.getUser(this.id);
+  }
+
+  loadUser(user: User): void {
+    this.user = user;
+  }
+
+  showUsers(): void {
+    this.getUser()
+    .subscribe(
+      (user: User) => this.loadUser(user),
+      (error: HttpErrorResponse) => this.catchErr(error)
+    );
+  }
+
+  catchErr(error): void {
     error.errors.map( err => {
       if (err.status === '503' || err.status === '504') {
         this.errorMsg[0].warning.push(err);
@@ -28,7 +53,7 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  user_edit(event: any, editName, editSurname, editDate, editEmail ) {
+  userEdit(event: any, editName, editSurname, editDate, editEmail ): void {
     const body = JSON.stringify({
       'data': {
         'type' : 'human', 'id': this.id,
@@ -42,19 +67,19 @@ export class ContactComponent implements OnInit {
     });
     this.usersService.changeUser(this.id, body)
     .subscribe(
-      (users: any[]) => {
-        this.users = users['attributes'];
+      (user: User) => {
+        this.user = user;
       },
       (error) => this.catchErr(error)
     );
     alert('successfully changed');
   }
 
-  userDelete() {
+  userDelete(): void {
     this.usersService.deleteUser(this.id)
     .subscribe(
-      (users: any[]) => {
-        this.users = users;
+      (user: User) => {
+        this.user = user;
       },
       (error) => this.catchErr(error)
     );
@@ -69,8 +94,8 @@ export class ContactComponent implements OnInit {
     });
     this.usersService.getUser(this.id)
     .subscribe(
-    (users) => {
-      this.users = users['attributes'];
+    (user: User) => {
+      this.user = user;
     },
     (error) => this.catchErr(error)
   );

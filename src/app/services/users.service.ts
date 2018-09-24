@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
-import { Users } from './users.model';
+import { User } from './user.model';
 import { ResponseData } from './response-data.model';
 
 @Injectable({
@@ -54,11 +54,11 @@ export class UsersService {
       .catch(this.errorHandler);
     }
 
-  getUser(id: number): Observable<any> {
+  getUser(id: number): Observable<User> {
     return this.http
     .get(this.apiUrl + id, this.options)
     .pipe(
-      map( response => response['data']),
+      map( response => response['data']['attributes']),
     )
     .catch(this.errorHandler);
   }

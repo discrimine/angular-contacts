@@ -10,9 +10,6 @@ import { UsersService } from './services/users.service';
 })
 export class AppComponent {
   title = 'адресная книга';
-  users = [];
-  add_cont;
-  show_edit;
 
   constructor(private usersService: UsersService) {
   }
