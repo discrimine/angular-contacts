@@ -1,11 +1,10 @@
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { map, catchError, mergeMap, reduce } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import { User } from './user.model';
-import { ResponseData } from './response-data.model';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +31,7 @@ export class UsersService {
     return throwError(error.error || 'Server Error');
   }
 
-  getUsers(options?): Observable<ResponseData> {
+  getUsers(options?): Observable<User> {
     const urlOptions: string[] = [];
     if (options.sort) {
       urlOptions.push('sort=' + encodeURIComponent(options.sort));
@@ -49,7 +48,19 @@ export class UsersService {
     return this.http
       .get(this.apiUrl + '?' + urlOptions.join('&'), this.options)
       .pipe(
-        map( response => response['data'])
+        map( (response: any) => {
+          response = response['data'];
+          response.map( (user) => {
+            user.nameFirst = user['attributes']['name_first'];
+            user.nameLast = user['attributes']['name_last'];
+            user.birthday = user['attributes']['birthday'];
+            user.email = user['attributes']['email'];
+            delete user['attributes'];
+            delete user['type'];
+            return user;
+          });
+          return response;
+        }),
       )
       .catch(this.errorHandler);
     }
@@ -58,24 +69,45 @@ export class UsersService {
     return this.http
     .get(this.apiUrl + id, this.options)
     .pipe(
-      map( response => response['data']['attributes']),
+      map( (response: any) => {
+        response = response['data'];
+        response.id = response['id'];
+        response.nameFirst = response['attributes']['name_first'];
+        response.nameLast = response['attributes']['name_last'];
+        response.email = response['attributes']['email'];
+        response.birthday = response['attributes']['birthday'];
+        delete response['attributes'];
+        delete response['type'];
+        return response;
+      }),
     )
     .catch(this.errorHandler);
   }
 
-  deleteUser(id: number): Observable<any> {
+  deleteUser(id: number): Observable<null> {
     return this.http
     .delete(this.apiUrl + id, this.options)
+    .pipe(
+      map( (response: any) => {
+        response = null;
+        return response;
+      })
+    )
     .catch(this.errorHandler);
   }
 
-  changeUser(id: number, body: string): Observable<any> {
+  changeUser(id: number, body: string): Observable<User> {
     return this.http
     .patch(this.apiUrl + id, body, this.options)
+    .pipe(
+      map( (response: any) => {
+        return response;
+      })
+    )
     .catch(this.errorHandler);
   }
 
-  addUser(values): Observable<any>  {
+  addUser(values): Observable<User>  {
     const body = JSON.stringify({
       'data' : {
         'type' : 'human',
@@ -90,7 +122,10 @@ export class UsersService {
     return this.http
     .post(this.apiUrl, body, this.options)
     .pipe(
-      catchError(this.errorHandler)
-    );
+      map( (response: any) => {
+        return response;
+      })
+    )
+    .catch(this.errorHandler);
   }
 }

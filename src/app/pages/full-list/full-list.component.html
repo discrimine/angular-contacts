@@ -95,10 +95,10 @@
     <tbody>
       <tr *ngFor="let user of users">
         <td #userId > {{ user.id }}</td>
-        <td #userName> {{ user.attributes.name_first }}</td>
-        <td #userSurname> {{ user.attributes.name_last }}</td>
-        <td #userDate> {{ user.attributes.birthday | date }}</td>
-        <td #userEmail> {{ user.attributes.email }}</td>
+        <td #userName> {{ user.nameFirst }}</td>
+        <td #userSurname> {{ user.nameLast }}</td>
+        <td #userDate> {{ user.birthday | date }}</td>
+        <td #userEmail> {{ user.email }}</td>
         <td>
           <button class="userEdit" (click)="userDelete(userId); false">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">

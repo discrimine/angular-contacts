@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../services/users.service';
-import { ResponseData } from '../../services/response-data.model';
 import { User } from '../../services/user.model';
 import { Observable } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { merge, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contact',
@@ -25,6 +25,13 @@ export class ContactComponent implements OnInit {
       critical : [
       ]
     }];
+    this.user = {
+      id: 0,
+      nameFirst: '',
+      nameLast: '',
+      email: '',
+      birthday: ''
+    };
    }
 
   getUser(): Observable<User> {
@@ -35,7 +42,7 @@ export class ContactComponent implements OnInit {
     this.user = user;
   }
 
-  showUsers(): void {
+  showUser(): void {
     this.getUser()
     .subscribe(
       (user: User) => this.loadUser(user),
@@ -66,11 +73,14 @@ export class ContactComponent implements OnInit {
       }
     });
     this.usersService.changeUser(this.id, body)
+    .pipe(
+      mergeMap( (): Observable<User> => {
+        return this.getUser();
+      })
+    )
     .subscribe(
-      (user: User) => {
-        this.user = user;
-      },
-      (error) => this.catchErr(error)
+      (user: User) => this.loadUser(user),
+      (error: HttpErrorResponse) => this.catchErr(error)
     );
     alert('successfully changed');
   }
@@ -92,14 +102,7 @@ export class ContactComponent implements OnInit {
     .subscribe( params => {
       this.id = + params['id'];
     });
-    this.usersService.getUser(this.id)
-    .subscribe(
-    (user: User) => {
-      this.user = user;
-    },
-    (error) => this.catchErr(error)
-  );
-
+    this.showUser();
   }
 
 }

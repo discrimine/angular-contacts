@@ -5,7 +5,6 @@ import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { User } from '../../services/user.model';
-import { ResponseData } from '../../services/response-data.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -21,7 +20,7 @@ export class FullListComponent implements OnInit {
   private showAddCont: boolean;
   private errorMsg: any;
   private apiParams: any;
-  private users: ResponseData;
+  private users: User;
 
   constructor(
     private usersService: UsersService,
@@ -30,10 +29,10 @@ export class FullListComponent implements OnInit {
     fb: FormBuilder
   ) {
     this.rForm = fb.group({
-      'nameFirst' : [null, [Validators.required]],
-      'nameLast' : [null, [Validators.required]],
-      'birthday' : [null, [Validators.required]],
-      'email' : [null, [Validators.required, Validators.email]]
+      'nameFirst' : ['', [Validators.required]],
+      'nameLast' : ['', [Validators.required]],
+      'birthday' : ['', [Validators.required]],
+      'email' : ['', [Validators.required, Validators.email]]
     });
     this.showAddCont = false;
     this.tryAdd = false;
@@ -50,20 +49,21 @@ export class FullListComponent implements OnInit {
       filterType : '',
       filterValue : ''
     };
+
   }
 
-  getUsers(): Observable<ResponseData> {
+  getUsers(): Observable<User> {
     return this.usersService.getUsers(this.apiParams);
   }
 
-  loadUsers(users: ResponseData): void {
+  loadUsers(users: User): void {
     this.users = users;
   }
 
   showUsers(): void {
     this.getUsers()
     .subscribe(
-      (users: ResponseData) => this.loadUsers(users),
+      (users: User) => this.loadUsers(users),
       (error: HttpErrorResponse) => this.catchErr(error)
     );
   }
@@ -96,13 +96,13 @@ export class FullListComponent implements OnInit {
       .deleteUser(id.innerText)
       .pipe(
         mergeMap(
-          (): Observable<ResponseData> => {
+          (): Observable<User> => {
             return this.getUsers();
           }
         )
       )
       .subscribe(
-        (users: ResponseData) => this.loadUsers(users),
+        (users: User) => this.loadUsers(users),
         (error: HttpErrorResponse) => this.catchErr(error)
       );
     }
@@ -116,13 +116,13 @@ export class FullListComponent implements OnInit {
       this.usersService.addUser(bodyObj)
       .pipe(
         mergeMap(
-          (): Observable<ResponseData> => {
+          (): Observable<User> => {
             return this.getUsers();
           }
         )
       )
       .subscribe(
-        (users: ResponseData) => this.loadUsers(users),
+        (users: User) => this.loadUsers(users),
         (error: HttpErrorResponse) => this.catchErr(error)
       );
       alert('new cont is added');
