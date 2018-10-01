@@ -1,7 +1,7 @@
-import { map, catchError, mergeMap, reduce } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import { User } from './user.model';
@@ -12,13 +12,13 @@ import { User } from './user.model';
 export class UsersService {
 
   private apiUrl: string;
-  private users: any;
+  private users: Array<User>;
   private headers: any;
   private options: any;
 
   constructor(private http: HttpClient, private router: Router) {
     this.apiUrl = 'http://angulartest.vivasg.com/human/';
-    this.users = undefined;
+    this.users = [];
     this.headers = new HttpHeaders({
       'Accept' : 'application/vnd.api+json',
       'Accept-Language': 'uk',
@@ -31,7 +31,7 @@ export class UsersService {
     return throwError(error.error || 'Server Error');
   }
 
-  getUsers(options?): Observable<User> {
+  getUsers(options?): Observable<User[]> {
     const urlOptions: string[] = [];
     if (options.sort) {
       urlOptions.push('sort=' + encodeURIComponent(options.sort));
@@ -49,20 +49,21 @@ export class UsersService {
       .get(this.apiUrl + '?' + urlOptions.join('&'), this.options)
       .pipe(
         map( (response: any) => {
+          const users = [];
           response = response['data'];
           response.map( (user) => {
-            user.nameFirst = user['attributes']['name_first'];
-            user.nameLast = user['attributes']['name_last'];
-            user.birthday = user['attributes']['birthday'];
-            user.email = user['attributes']['email'];
-            delete user['attributes'];
-            delete user['type'];
-            return user;
+            const rUser = new User;
+            rUser.id = user['id'];
+            rUser.nameFirst = user['attributes']['name_first'];
+            rUser.nameLast = user['attributes']['name_last'];
+            rUser.birthday = user['attributes']['birthday'];
+            rUser.email = user['attributes']['email'];
+            users.push(rUser);
           });
-          return response;
+          return users;
         }),
-      )
-      .catch(this.errorHandler);
+        catchError(this.errorHandler)
+      );
     }
 
   getUser(id: number): Observable<User> {
@@ -71,29 +72,27 @@ export class UsersService {
     .pipe(
       map( (response: any) => {
         response = response['data'];
-        response.id = response['id'];
-        response.nameFirst = response['attributes']['name_first'];
-        response.nameLast = response['attributes']['name_last'];
-        response.email = response['attributes']['email'];
-        response.birthday = response['attributes']['birthday'];
-        delete response['attributes'];
-        delete response['type'];
-        return response;
+        const rUser = new User;
+        rUser.id = response['id'];
+        rUser.nameFirst = response['attributes']['name_first'];
+        rUser.nameLast = response['attributes']['name_last'];
+        rUser.birthday = response['attributes']['birthday'];
+        rUser.email = response['attributes']['email'];
+        return rUser;
       }),
-    )
-    .catch(this.errorHandler);
+      catchError(this.errorHandler)
+    );
   }
 
-  deleteUser(id: number): Observable<null> {
+  deleteUser(id: number): Observable<boolean> {
     return this.http
     .delete(this.apiUrl + id, this.options)
     .pipe(
       map( (response: any) => {
-        response = null;
         return response;
-      })
-    )
-    .catch(this.errorHandler);
+      }),
+      catchError(this.errorHandler)
+    );
   }
 
   changeUser(id: number, body: string): Observable<User> {
@@ -101,10 +100,17 @@ export class UsersService {
     .patch(this.apiUrl + id, body, this.options)
     .pipe(
       map( (response: any) => {
-        return response;
-      })
-    )
-    .catch(this.errorHandler);
+        response = response['data'];
+        const rUser = new User;
+        rUser.id = response['id'];
+        rUser.nameFirst = response['attributes']['name_first'];
+        rUser.nameLast = response['attributes']['name_last'];
+        rUser.birthday = response['attributes']['birthday'];
+        rUser.email = response['attributes']['email'];
+        return rUser;
+      }),
+      catchError(this.errorHandler)
+    );
   }
 
   addUser(values): Observable<User>  {
@@ -123,9 +129,16 @@ export class UsersService {
     .post(this.apiUrl, body, this.options)
     .pipe(
       map( (response: any) => {
-        return response;
-      })
-    )
-    .catch(this.errorHandler);
+        response = response['data'];
+        const rUser = new User;
+        rUser.id = response['id'];
+        rUser.nameFirst = response['attributes']['name_first'];
+        rUser.nameLast = response['attributes']['name_last'];
+        rUser.birthday = response['attributes']['birthday'];
+        rUser.email = response['attributes']['email'];
+        return rUser;
+      }),
+      catchError(this.errorHandler)
+    );
   }
 }

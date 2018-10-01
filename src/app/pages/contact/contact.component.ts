@@ -88,8 +88,8 @@ export class ContactComponent implements OnInit {
   userDelete(): void {
     this.usersService.deleteUser(this.id)
     .subscribe(
-      (user: User) => {
-        this.user = user;
+      (response: boolean) => {
+        console.log(response);
       },
       (error) => this.catchErr(error)
     );

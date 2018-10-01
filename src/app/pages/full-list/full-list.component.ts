@@ -20,7 +20,7 @@ export class FullListComponent implements OnInit {
   private showAddCont: boolean;
   private errorMsg: any;
   private apiParams: any;
-  private users: User;
+  private users: User[];
 
   constructor(
     private usersService: UsersService,
@@ -52,18 +52,18 @@ export class FullListComponent implements OnInit {
 
   }
 
-  getUsers(): Observable<User> {
+  getUsers(): Observable<User[]> {
     return this.usersService.getUsers(this.apiParams);
   }
 
-  loadUsers(users: User): void {
+  loadUsers(users: User[]): void {
     this.users = users;
   }
 
   showUsers(): void {
     this.getUsers()
     .subscribe(
-      (users: User) => this.loadUsers(users),
+      (users: User[]) => this.loadUsers(users),
       (error: HttpErrorResponse) => this.catchErr(error)
     );
   }
@@ -96,13 +96,13 @@ export class FullListComponent implements OnInit {
       .deleteUser(id.innerText)
       .pipe(
         mergeMap(
-          (): Observable<User> => {
+          (): Observable<User[]> => {
             return this.getUsers();
           }
         )
       )
       .subscribe(
-        (users: User) => this.loadUsers(users),
+        (users: User[]) => this.loadUsers(users),
         (error: HttpErrorResponse) => this.catchErr(error)
       );
     }
@@ -116,13 +116,13 @@ export class FullListComponent implements OnInit {
       this.usersService.addUser(bodyObj)
       .pipe(
         mergeMap(
-          (): Observable<User> => {
+          (): Observable<User[]> => {
             return this.getUsers();
           }
         )
       )
       .subscribe(
-        (users: User) => this.loadUsers(users),
+        (users: User[]) => this.loadUsers(users),
         (error: HttpErrorResponse) => this.catchErr(error)
       );
       alert('new cont is added');
