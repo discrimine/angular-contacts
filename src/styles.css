@@ -89,7 +89,10 @@
   }
   .pagi-list{
     display: flex;
-    
+    justify-content: space-between
+  }
+  .pagi-list div:hover {
+    cursor: pointer;
   }
   .contact_actions{
     display: flex;

@@ -26,6 +26,12 @@
       <button class="sort_but btn btn-primary" (click)="usersSort('birthday')">birthday</button>
       <button class="sort_but btn btn-primary" (click)="usersSort('email')">email</button>
     </div>
+    <div class="count">
+      show:
+      <button class="sort_but btn btn-primary" (click)="usersOnPage(5)">5</button>
+      <button class="sort_but btn btn-primary" (click)="usersOnPage(10)">10</button>
+      <button class="sort_but btn btn-primary" (click)="usersOnPage('')">all</button>
+    </div>
     <div>
       <button (click)="showAddCont=!showAddCont" class="btn btn-success sort_but">add</button>
     </div>
@@ -120,9 +126,9 @@
       </tr>
     </tbody>
   </table>
-  <div class="pagi-list">
-    <div class="pagi" *ngFor = "let n of pages_array">
-      <a class="pagi_a" #pageNum  (click)="pagiFunc($event, pageNum)">{{n+1}}</a>
+  <div class="pagi-list" *ngIf = "paginationFlag">
+    <div *ngFor = 'let page of pageArray'>
+      {{page}}
     </div>
   </div>
 </div>

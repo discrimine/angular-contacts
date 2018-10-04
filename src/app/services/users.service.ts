@@ -5,7 +5,6 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpResponse } from '@angul
 import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import { User } from './user.model';
-
 @Injectable({
   providedIn: 'root'
 })

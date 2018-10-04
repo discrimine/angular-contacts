@@ -21,12 +21,14 @@ export class FullListComponent implements OnInit {
   private errorMsg: any;
   private apiParams: any;
   private users: User[];
+  private paginationFlag: boolean;
+  private pageArray: any;
 
   constructor(
     private usersService: UsersService,
     private titleService: Title,
     private meta: Meta,
-    fb: FormBuilder
+    fb: FormBuilder,
   ) {
     this.rForm = fb.group({
       'nameFirst' : ['', [Validators.required]],
@@ -49,7 +51,8 @@ export class FullListComponent implements OnInit {
       filterType : '',
       filterValue : ''
     };
-
+    this.paginationFlag = false;
+    this.pageArray = [];
   }
 
   getUsers(): Observable<User[]> {
@@ -63,7 +66,11 @@ export class FullListComponent implements OnInit {
   showUsers(): void {
     this.getUsers()
     .subscribe(
-      (users: User[]) => this.loadUsers(users),
+      (users: User[]) => {
+        this.loadUsers(users);
+        this.users.length < 81 ? this.paginationFlag = true : this.paginationFlag = false;
+        this.usersOnPage();
+      },
       (error: HttpErrorResponse) => this.catchErr(error)
     );
   }
@@ -135,6 +142,16 @@ export class FullListComponent implements OnInit {
     this.apiParams.filterType = filterType;
     this.apiParams.filterValue = filterValue.value;
     this.showUsers();
+  }
+
+  usersOnPage(amount?: number) {
+    this.apiParams.count = amount;
+    const pageCount = Math.ceil(81 / this.apiParams.count);
+    if (this.paginationFlag === true) {
+      for (let i = 1; i < pageCount; i++) {
+        this.pageArray.push(i);
+      }
+    }
   }
 
   ngOnInit() {
