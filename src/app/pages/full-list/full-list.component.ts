@@ -68,8 +68,6 @@ export class FullListComponent implements OnInit {
     .subscribe(
       (users: User[]) => {
         this.loadUsers(users);
-        this.users.length < 81 ? this.paginationFlag = true : this.paginationFlag = false;
-        this.usersOnPage();
       },
       (error: HttpErrorResponse) => this.catchErr(error)
     );
@@ -144,14 +142,23 @@ export class FullListComponent implements OnInit {
     this.showUsers();
   }
 
-  usersOnPage(amount?: number) {
-    this.apiParams.count = amount;
-    const pageCount = Math.ceil(81 / this.apiParams.count);
-    if (this.paginationFlag === true) {
+  usersOnPage(amount?: number): void {
+    if (amount) {
+      this.apiParams.count = amount;
+      const pageCount = Math.ceil(81 / this.apiParams.count);
+      this.paginationFlag = true;
       for (let i = 1; i < pageCount; i++) {
         this.pageArray.push(i);
       }
+    } else {
+      this.apiParams.count = false;
+      this.paginationFlag = false;
     }
+    this.showUsers();
+  }
+
+  changePage(page: string): void {
+    Number(page);
   }
 
   ngOnInit() {

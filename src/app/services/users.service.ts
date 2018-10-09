@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import 'rxjs/add/operator/catch';
 import { User } from './user.model';
 @Injectable({
   providedIn: 'root'
@@ -85,10 +84,14 @@ export class UsersService {
 
   deleteUser(id: number): Observable<boolean> {
     return this.http
-    .delete(this.apiUrl + id, this.options)
+    .delete(this.apiUrl + id, { headers: this.headers, observe: 'response' })
     .pipe(
       map( (response: any) => {
-        return response;
+      if (response.status === 204) {
+        return true;
+      } else {
+        return false;
+      }
       }),
       catchError(this.errorHandler)
     );
