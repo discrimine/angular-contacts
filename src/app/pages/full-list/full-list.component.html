@@ -127,9 +127,8 @@
     </tbody>
   </table>
   <div class="pagi-list" *ngIf = "paginationFlag">
-    <div #paginationPage (click)="changePage(paginationPage.innerHTML)" *ngFor = 'let page of pageArray'>
-      {{page}}
-    </div>
+    <button [disabled]='apiParams.offset == 0' (click)="changePage('prev')" class="btn btn-primary pagiPrev"> <- </button>
+    <button [disabled]='lastPage' (click)="changePage('next')" class="btn btn-primary pagiNext"> -> </button>
   </div>
 </div>
 </div>

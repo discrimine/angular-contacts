@@ -33,3 +33,10 @@
 .errs{
     margin: 50px 0;
 }
+.pagi-list{
+    display: flex;
+    justify-content: center;
+}
+.pagi-list button{
+    margin: 0 10px;
+}

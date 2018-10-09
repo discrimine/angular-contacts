@@ -87,13 +87,6 @@
   .pagi{
     margin: 0 5px;
   }
-  .pagi-list{
-    display: flex;
-    justify-content: space-between
-  }
-  .pagi-list div:hover {
-    cursor: pointer;
-  }
   .contact_actions{
     display: flex;
     justify-content: space-between;
@@ -113,7 +106,6 @@
     margin: 0 2px;
   }
   .main_table{
-    min-height: 500px;
     width: 100%;
   }
   .main_table td{

@@ -23,6 +23,8 @@ export class FullListComponent implements OnInit {
   private users: User[];
   private paginationFlag: boolean;
   private pageArray: any;
+  private usersCount: number;
+  private lastPage: boolean;
 
   constructor(
     private usersService: UsersService,
@@ -45,14 +47,15 @@ export class FullListComponent implements OnInit {
       ]
     }];
     this.apiParams = {
-      sort : '',
-      count : '',
-      offset : '',
+      sort : 'id',
+      count : 5,
+      offset : 0,
       filterType : '',
       filterValue : ''
     };
-    this.paginationFlag = false;
-    this.pageArray = [];
+    this.paginationFlag = true;
+    this.usersCount = 0;
+    this.lastPage = false;
   }
 
   getUsers(): Observable<User[]> {
@@ -60,7 +63,13 @@ export class FullListComponent implements OnInit {
   }
 
   loadUsers(users: User[]): void {
-    this.users = users;
+    this.lastPage = false;
+    if (users.length == 0) {
+      this.lastPage = true;
+      this.apiParams.offset -= this.apiParams.count;
+    } else {
+      this.users = users;
+    }
   }
 
   showUsers(): void {
@@ -137,19 +146,17 @@ export class FullListComponent implements OnInit {
   }
 
   userFilter(event, filterType, filterValue): void {
+    this.apiParams.offset = 0;
     this.apiParams.filterType = filterType;
     this.apiParams.filterValue = filterValue.value;
     this.showUsers();
   }
 
   usersOnPage(amount?: number): void {
+    this.apiParams.offset = 0;
     if (amount) {
       this.apiParams.count = amount;
-      const pageCount = Math.ceil(81 / this.apiParams.count);
       this.paginationFlag = true;
-      for (let i = 1; i < pageCount; i++) {
-        this.pageArray.push(i);
-      }
     } else {
       this.apiParams.count = false;
       this.paginationFlag = false;
@@ -157,8 +164,13 @@ export class FullListComponent implements OnInit {
     this.showUsers();
   }
 
-  changePage(page: string): void {
-    Number(page);
+  changePage(action: string): void {
+    if (action === 'prev'){
+      this.apiParams.offset -= this.apiParams.count;
+    } else if (action === 'next') {
+      this.apiParams.offset += this.apiParams.count;
+    }
+    this.showUsers();
   }
 
   ngOnInit() {
